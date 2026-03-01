@@ -6,6 +6,7 @@ from .models import LintError, Severity
 from .rules import (
     callouts,
     code_blocks,
+    compatibility,
     embeds,
     footnotes,
     formatting,
@@ -27,6 +28,7 @@ _RULE_MODULES = [
     footnotes,
     tables,
     math,
+    compatibility,
 ]
 
 
