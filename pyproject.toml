@@ -7,11 +7,12 @@ name = "mdlint-obsidian"
 version = "0.2.0"
 description = "A linter for Obsidian Flavored Markdown files"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 keywords = ["obsidian", "markdown", "linter", "lint"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
