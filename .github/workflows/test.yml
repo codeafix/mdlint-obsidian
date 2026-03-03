@@ -26,4 +26,4 @@ jobs:
         run: pip install -e ".[dev]"
 
       - name: Run tests with coverage
-        run: pytest tests/ --cov=mdlint_obsidian --cov-report=term-missing
+        run: pytest tests/ --cov=mdlint_obsidian --cov-report=term-missing --cov-fail-under=90
