@@ -1,10 +1,10 @@
 # mdlint-obsidian
 
 <!-- Badges placeholder -->
-<!-- [![PyPI version](https://badge.fury.io/py/mdlint-obsidian.svg)](https://badge.fury.io/py/mdlint-obsidian) -->
-<!-- [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/) -->
-<!-- [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) -->
-<!-- [![Tests](https://github.com/you/mdlint-obsidian/actions/workflows/test.yml/badge.svg)](https://github.com/you/mdlint-obsidian/actions) -->
+[![PyPI version](https://badge.fury.io/py/mdlint-obsidian.svg)](https://badge.fury.io/py/mdlint-obsidian)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/codeafix/mdlint-obsidian/actions/workflows/test.yml/badge.svg)](https://github.com/codeafix/mdlint-obsidian/actions)
 
 A Python library and CLI tool that lints **Obsidian Flavored Markdown** files.
 
@@ -188,7 +188,7 @@ All rules skip content inside fenced code blocks (``` ` ``` `` or `~~~`).
 ## Development
 
 ```bash
-git clone https://github.com/you/mdlint-obsidian.git
+git clone https://github.com/codeafix/mdlint-obsidian.git
 cd mdlint-obsidian
 pip install -e ".[dev]"
 pytest
