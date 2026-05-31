@@ -8,12 +8,10 @@ unclosed-code-block : An opening fence (``` or ~~~) has no matching closing fenc
 from __future__ import annotations
 
 from ..models import LintError, Severity
-from ..utils import get_code_block_ranges, get_frontmatter_end
 
 
-def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
+def check(lines: list[str], *, fm_end: int = 0, **_kwargs) -> list[LintError]:
     errors: list[LintError] = []
-    fm_end = get_frontmatter_end(lines)
 
     # get_code_block_ranges already handles detection.  An unclosed block is
     # one whose range extends to the last line of the document without a proper

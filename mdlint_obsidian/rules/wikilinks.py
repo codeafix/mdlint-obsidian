@@ -14,24 +14,22 @@ from __future__ import annotations
 from pathlib import Path
 
 from ..models import LintError, Severity
-from ..utils import get_frontmatter_end, is_in_code_block
 
 
-def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
+def check(
+    lines: list[str],
+    *,
+    fm_end: int = 0,
+    code_block_lines: frozenset[int] = frozenset(),
+    vault_index: dict[str, Path] | None = None,
+    **_kwargs,
+) -> list[LintError]:
     errors: list[LintError] = []
-    fm_end = get_frontmatter_end(lines)
-
-    # Build vault index for broken-link checks (case-insensitive stem lookup)
-    vault_index: dict[str, Path] | None = None
-    if vault_path:
-        vault_index = {
-            f.stem.lower(): f for f in Path(vault_path).rglob("*.md")
-        }
 
     for i, line in enumerate(lines):
         if i < fm_end:
             continue
-        if is_in_code_block(lines, i):
+        if i in code_block_lines:
             continue
         errors.extend(_check_line(line, i + 1, vault_index))
 

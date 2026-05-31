@@ -15,7 +15,7 @@ import yaml
 from ..models import LintError, Severity
 
 
-def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
+def check(lines: list[str], **_kwargs) -> list[LintError]:
     errors: list[LintError] = []
 
     if not lines:

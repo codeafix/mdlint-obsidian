@@ -47,14 +47,6 @@ def get_code_block_ranges(lines: list[str]) -> list[tuple[int, int]]:
     return ranges
 
 
-def is_in_code_block(lines: list[str], line_index: int) -> bool:
-    """Return True if the given line index is inside a fenced code block."""
-    for start, end in get_code_block_ranges(lines):
-        if start <= line_index <= end:
-            return True
-    return False
-
-
 def get_frontmatter_end(lines: list[str]) -> int:
     """Return the first line index after the frontmatter block.
 

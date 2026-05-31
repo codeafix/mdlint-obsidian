@@ -11,7 +11,6 @@ from __future__ import annotations
 import re
 
 from ..models import LintError, Severity
-from ..utils import get_frontmatter_end, is_in_code_block
 
 # A separator cell: optional spaces, optional leading colon, one or more dashes,
 # optional trailing colon, optional spaces.
@@ -45,14 +44,19 @@ def _is_separator_row(row: str) -> bool:
     return bool(cells) and all(_SEP_CELL_RE.match(cell) for cell in cells)
 
 
-def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
+def check(
+    lines: list[str],
+    *,
+    fm_end: int = 0,
+    code_block_lines: frozenset[int] = frozenset(),
+    **_kwargs,
+) -> list[LintError]:
     errors: list[LintError] = []
-    fm_end = get_frontmatter_end(lines)
     total = len(lines)
     i = 0
 
     while i < total:
-        if i < fm_end or is_in_code_block(lines, i):
+        if i < fm_end or i in code_block_lines:
             i += 1
             continue
 

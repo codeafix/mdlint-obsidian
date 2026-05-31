@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 
 from ..models import LintError, Severity
-from ..utils import get_frontmatter_end, is_in_code_block
 
 # ---------------------------------------------------------------------------
 # std-internal-link
@@ -99,10 +98,12 @@ _FOUR_SPACES_RE = re.compile(r"^    ")
 _LIST_MARKER_RE = re.compile(r"^([-*+]|\d+[.)]) ")
 
 
-def _preceded_by_blank(lines: list[str], i: int, fm_end: int) -> bool:
+def _preceded_by_blank(
+    lines: list[str], i: int, fm_end: int, code_block_lines: frozenset[int]
+) -> bool:
     """Return True if the line immediately before i (skipping code-block lines) is blank."""
     j = i - 1
-    while j >= fm_end and is_in_code_block(lines, j):
+    while j >= fm_end and j in code_block_lines:
         j -= 1
     if j < fm_end:
         return True   # first content line — treat as blank-preceded
@@ -156,14 +157,19 @@ _STD_HR_RE = re.compile(r"^\s*((\*\s*){3,}|(_\s*){3,})\s*$")
 # Main check function
 # ---------------------------------------------------------------------------
 
-def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
+def check(
+    lines: list[str],
+    *,
+    fm_end: int = 0,
+    code_block_lines: frozenset[int] = frozenset(),
+    **_kwargs,
+) -> list[LintError]:
     errors: list[LintError] = []
-    fm_end = get_frontmatter_end(lines)
 
     for i, line in enumerate(lines):
         if i < fm_end:
             continue
-        if is_in_code_block(lines, i):
+        if i in code_block_lines:
             continue
 
         line_num = i + 1
@@ -240,7 +246,7 @@ def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
             content = line.lstrip()
             if (
                 not _LIST_MARKER_RE.match(content)
-                and _preceded_by_blank(lines, i, fm_end)
+                and _preceded_by_blank(lines, i, fm_end, code_block_lines)
             ):
                 errors.append(
                     LintError(

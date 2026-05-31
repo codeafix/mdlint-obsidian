@@ -12,20 +12,26 @@ unclosed-inline-math : $ opened but not closed on the same line.
 from __future__ import annotations
 
 from ..models import LintError, Severity
-from ..utils import get_frontmatter_end, is_in_code_block
 
 
-def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
+def check(
+    lines: list[str],
+    *,
+    fm_end: int = 0,
+    code_block_lines: frozenset[int] = frozenset(),
+    **_kwargs,
+) -> list[LintError]:
     errors: list[LintError] = []
-    fm_end = get_frontmatter_end(lines)
 
-    errors.extend(_check_math_blocks(lines, fm_end))
-    errors.extend(_check_inline_math(lines, fm_end))
+    errors.extend(_check_math_blocks(lines, fm_end, code_block_lines))
+    errors.extend(_check_inline_math(lines, fm_end, code_block_lines))
 
     return errors
 
 
-def _check_math_blocks(lines: list[str], fm_end: int) -> list[LintError]:
+def _check_math_blocks(
+    lines: list[str], fm_end: int, code_block_lines: frozenset[int]
+) -> list[LintError]:
     """Detect unclosed $$ math blocks (document-level)."""
     errors: list[LintError] = []
     in_block = False
@@ -34,7 +40,7 @@ def _check_math_blocks(lines: list[str], fm_end: int) -> list[LintError]:
     for i, line in enumerate(lines):
         if i < fm_end:
             continue
-        if is_in_code_block(lines, i):
+        if i in code_block_lines:
             continue
 
         stripped = line.strip()
@@ -59,14 +65,16 @@ def _check_math_blocks(lines: list[str], fm_end: int) -> list[LintError]:
     return errors
 
 
-def _check_inline_math(lines: list[str], fm_end: int) -> list[LintError]:
+def _check_inline_math(
+    lines: list[str], fm_end: int, code_block_lines: frozenset[int]
+) -> list[LintError]:
     """Detect unclosed inline $...$ on each line (conservative)."""
     errors: list[LintError] = []
 
     for i, line in enumerate(lines):
         if i < fm_end:
             continue
-        if is_in_code_block(lines, i):
+        if i in code_block_lines:
             continue
         # Skip lines that are pure math-block delimiters
         if line.strip() == "$$":

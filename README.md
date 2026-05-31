@@ -183,6 +183,18 @@ All rules skip content inside fenced code blocks (``` ` ``` `` or `~~~`).
 | `unclosed-math-block` | ERROR | `$$` block opened but never closed (document-level) |
 | `unclosed-inline-math` | WARNING | `$` opened but not closed on the same line (conservative: ignores `$100`-style currency) |
 
+### Compatibility
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| `std-internal-link` | ERROR | `[text](path.md)` or `[text](path/note)` — use `[[wikilink]]` instead |
+| `std-internal-image` | ERROR | `![alt](local/path)` — use `![[image.png]]` instead |
+| `std-reference-link` | ERROR | `[text][ref]` usage or `[ref]: url` definition — not supported in Obsidian |
+| `heading-no-space` | ERROR | `#Heading` without a space after the `#` characters |
+| `indented-code-block` | ERROR | 4+ space indented line preceded by a blank line — use a fenced `` ``` `` block instead |
+| `raw-html` | ERROR | Raw HTML tags (e.g. `<div>`) — not reliably rendered in Obsidian |
+| `std-horizontal-rule` | ERROR | `***` or `___` horizontal rule — use `---` instead |
+
 ---
 
 ## Development

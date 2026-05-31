@@ -11,18 +11,22 @@ Note: escaped delimiters (\\== and \\%%) are handled correctly.
 from __future__ import annotations
 
 from ..models import LintError, Severity
-from ..utils import get_frontmatter_end, is_in_code_block
 
 
-def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
+def check(
+    lines: list[str],
+    *,
+    fm_end: int = 0,
+    code_block_lines: frozenset[int] = frozenset(),
+    **_kwargs,
+) -> list[LintError]:
     errors: list[LintError] = []
-    fm_end = get_frontmatter_end(lines)
 
     # --- unclosed-highlight (per-line) ---
     for i, line in enumerate(lines):
         if i < fm_end:
             continue
-        if is_in_code_block(lines, i):
+        if i in code_block_lines:
             continue
         if _has_unclosed_highlight(line):
             errors.append(
@@ -35,7 +39,7 @@ def check(lines: list[str], vault_path: str | None = None) -> list[LintError]:
             )
 
     # --- unclosed-comment (document-level) ---
-    errors.extend(_check_comments(lines, fm_end))
+    errors.extend(_check_comments(lines, fm_end, code_block_lines))
 
     return errors
 
@@ -57,7 +61,9 @@ def _has_unclosed_highlight(line: str) -> bool:
     return in_highlight
 
 
-def _check_comments(lines: list[str], fm_end: int) -> list[LintError]:
+def _check_comments(
+    lines: list[str], fm_end: int, code_block_lines: frozenset[int]
+) -> list[LintError]:
     """Check for unclosed %% comments across the whole document."""
     errors: list[LintError] = []
     in_comment = False
@@ -66,7 +72,7 @@ def _check_comments(lines: list[str], fm_end: int) -> list[LintError]:
     for i, line in enumerate(lines):
         if i < fm_end:
             continue
-        if is_in_code_block(lines, i):
+        if i in code_block_lines:
             continue
 
         j = 0
